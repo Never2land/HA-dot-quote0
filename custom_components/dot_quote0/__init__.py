@@ -23,6 +23,8 @@ PLATFORMS: list[Platform] = [
     Platform.SENSOR,
     Platform.BINARY_SENSOR,
     Platform.BUTTON,
+    Platform.TEXT,
+    Platform.SELECT,
 ]
 
 SERVICE_SEND_TEXT = "send_text"
