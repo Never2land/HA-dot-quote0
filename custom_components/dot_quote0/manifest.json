@@ -1,0 +1,11 @@
+{
+  "domain": "dot_quote0",
+  "name": "Dot. Quote/0",
+  "codeowners": [],
+  "config_flow": true,
+  "documentation": "https://dot.mindreset.tech/docs",
+  "integration_type": "hub",
+  "iot_class": "cloud_polling",
+  "version": "1.0.0",
+  "requirements": []
+}

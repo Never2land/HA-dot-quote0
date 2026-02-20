@@ -1,0 +1,136 @@
+send_text:
+  name: Send Text
+  description: Push text content to a Dot. Quote/0 device.
+  fields:
+    device_id:
+      name: Device ID
+      description: The device serial number (e.g. ABCD1234ABCD).
+      required: true
+      example: "ABCD1234ABCD"
+      selector:
+        text:
+    title:
+      name: Title
+      description: Text title displayed on screen.
+      required: false
+      example: "Hello"
+      selector:
+        text:
+    message:
+      name: Message
+      description: Text content displayed on screen. Use \n for line breaks.
+      required: false
+      example: "World"
+      selector:
+        text:
+          multiline: true
+    signature:
+      name: Signature
+      description: Signature text displayed at the bottom.
+      required: false
+      example: "2025-08-04 20:00"
+      selector:
+        text:
+    icon:
+      name: Icon
+      description: Base64-encoded PNG icon data (40x40px).
+      required: false
+      selector:
+        text:
+    link:
+      name: Link
+      description: URL or URL scheme for NFC tap redirect.
+      required: false
+      example: "https://example.com"
+      selector:
+        text:
+    refresh_now:
+      name: Refresh Now
+      description: Whether to display content immediately.
+      required: false
+      default: true
+      selector:
+        boolean:
+    task_key:
+      name: Task Key
+      description: Target a specific Text API task on the device. Leave empty for the first one.
+      required: false
+      selector:
+        text:
+
+send_image:
+  name: Send Image
+  description: Push image content to a Dot. Quote/0 device.
+  fields:
+    device_id:
+      name: Device ID
+      description: The device serial number (e.g. ABCD1234ABCD).
+      required: true
+      example: "ABCD1234ABCD"
+      selector:
+        text:
+    image:
+      name: Image
+      description: Base64-encoded PNG image data (296x152px) or an absolute file path to a PNG image.
+      required: true
+      selector:
+        text:
+    link:
+      name: Link
+      description: URL or URL scheme for NFC tap redirect.
+      required: false
+      example: "https://example.com"
+      selector:
+        text:
+    border:
+      name: Border
+      description: Screen border color. 0 = white, 1 = black.
+      required: false
+      default: 0
+      selector:
+        select:
+          options:
+            - label: "White"
+              value: 0
+            - label: "Black"
+              value: 1
+    dither_type:
+      name: Dither Type
+      description: Image dithering type.
+      required: false
+      selector:
+        select:
+          options:
+            - "DIFFUSION"
+            - "ORDERED"
+            - "NONE"
+    dither_kernel:
+      name: Dither Kernel
+      description: Error-diffusion dithering algorithm.
+      required: false
+      selector:
+        select:
+          options:
+            - "FLOYD_STEINBERG"
+            - "ATKINSON"
+            - "BURKES"
+            - "SIERRA2"
+            - "STUCKI"
+            - "JARVIS_JUDICE_NINKE"
+            - "DIFFUSION_ROW"
+            - "DIFFUSION_COLUMN"
+            - "DIFFUSION_2D"
+            - "THRESHOLD"
+    refresh_now:
+      name: Refresh Now
+      description: Whether to display content immediately.
+      required: false
+      default: true
+      selector:
+        boolean:
+    task_key:
+      name: Task Key
+      description: Target a specific Image API task on the device. Leave empty for the first one.
+      required: false
+      selector:
+        text:

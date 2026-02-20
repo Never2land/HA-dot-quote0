@@ -1,0 +1,22 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Dot. Quote/0",
+        "description": "Enter your API key from the Dot. App (More > API Key).",
+        "data": {
+          "api_key": "API Key"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid API key",
+      "cannot_connect": "Cannot connect to Dot. cloud service",
+      "no_devices": "No devices found for this API key",
+      "unknown": "An unknown error occurred"
+    },
+    "abort": {
+      "already_configured": "This API key is already configured"
+    }
+  }
+}
