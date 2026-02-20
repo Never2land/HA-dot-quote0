@@ -32,7 +32,7 @@ SERVICE_SEND_IMAGE = "send_image"
 
 SEND_TEXT_SCHEMA = vol.Schema(
     {
-        vol.Required("device_id"): cv.string,
+        vol.Required("serial"): cv.string,
         vol.Optional("title"): cv.string,
         vol.Optional("message"): cv.string,
         vol.Optional("signature"): cv.string,
@@ -45,7 +45,7 @@ SEND_TEXT_SCHEMA = vol.Schema(
 
 SEND_IMAGE_SCHEMA = vol.Schema(
     {
-        vol.Required("device_id"): cv.string,
+        vol.Required("serial"): cv.string,
         vol.Required("image"): cv.string,
         vol.Optional("link"): cv.string,
         vol.Optional("border", default=0): vol.In([0, 1]),
@@ -115,7 +115,7 @@ async def _async_register_services(hass: HomeAssistant) -> None:
         return
 
     async def handle_send_text(call: ServiceCall) -> None:
-        device_id = call.data["device_id"]
+        device_id = call.data["serial"]
         api = _find_api_for_device(hass, device_id)
         if api is None:
             raise DotApiError(f"No configured integration owns device {device_id}")
@@ -131,7 +131,7 @@ async def _async_register_services(hass: HomeAssistant) -> None:
         )
 
     async def handle_send_image(call: ServiceCall) -> None:
-        device_id = call.data["device_id"]
+        device_id = call.data["serial"]
         api = _find_api_for_device(hass, device_id)
         if api is None:
             raise DotApiError(f"No configured integration owns device {device_id}")

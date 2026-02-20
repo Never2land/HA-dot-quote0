@@ -2,8 +2,8 @@ send_text:
   name: Send Text
   description: Push text content to a Dot. Quote/0 device.
   fields:
-    device_id:
-      name: Device ID
+    serial:
+      name: Serial
       description: The device serial number (e.g. ABCD1234ABCD).
       required: true
       example: "ABCD1234ABCD"
@@ -62,8 +62,8 @@ send_image:
   name: Send Image
   description: Push image content to a Dot. Quote/0 device.
   fields:
-    device_id:
-      name: Device ID
+    serial:
+      name: Serial
       description: The device serial number (e.g. ABCD1234ABCD).
       required: true
       example: "ABCD1234ABCD"
