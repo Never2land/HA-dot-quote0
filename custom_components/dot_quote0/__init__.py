@@ -118,36 +118,52 @@ async def _async_register_services(hass: HomeAssistant) -> None:
         device_id = call.data["serial"]
         api = _find_api_for_device(hass, device_id)
         if api is None:
-            raise DotApiError(f"No configured integration owns device {device_id}")
-        await api.send_text(
-            device_id,
-            refreshNow=call.data.get("refresh_now", True),
-            title=call.data.get("title"),
-            message=call.data.get("message"),
-            signature=call.data.get("signature"),
-            icon=call.data.get("icon"),
-            link=call.data.get("link"),
-            taskKey=call.data.get("task_key"),
-        )
+            raise DotApiError(f"Device '{device_id}' not found. Check the serial number.")
+        try:
+            await api.send_text(
+                device_id,
+                refreshNow=call.data.get("refresh_now", True),
+                title=call.data.get("title"),
+                message=call.data.get("message"),
+                signature=call.data.get("signature"),
+                icon=call.data.get("icon"),
+                link=call.data.get("link"),
+                taskKey=call.data.get("task_key"),
+            )
+        except DotApiError as err:
+            if "not found" in str(err).lower():
+                raise DotApiError(
+                    f"Device '{device_id}' has no Text API content program configured. "
+                    "Add one in the Dot. app first."
+                ) from err
+            raise
 
     async def handle_send_image(call: ServiceCall) -> None:
         device_id = call.data["serial"]
         api = _find_api_for_device(hass, device_id)
         if api is None:
-            raise DotApiError(f"No configured integration owns device {device_id}")
+            raise DotApiError(f"Device '{device_id}' not found. Check the serial number.")
         image_data = await hass.async_add_executor_job(
             _resolve_image, call.data["image"]
         )
-        await api.send_image(
-            device_id,
-            refreshNow=call.data.get("refresh_now", True),
-            image=image_data,
-            link=call.data.get("link"),
-            border=call.data.get("border", 0),
-            ditherType=call.data.get("dither_type"),
-            ditherKernel=call.data.get("dither_kernel"),
-            taskKey=call.data.get("task_key"),
-        )
+        try:
+            await api.send_image(
+                device_id,
+                refreshNow=call.data.get("refresh_now", True),
+                image=image_data,
+                link=call.data.get("link"),
+                border=call.data.get("border", 0),
+                ditherType=call.data.get("dither_type"),
+                ditherKernel=call.data.get("dither_kernel"),
+                taskKey=call.data.get("task_key"),
+            )
+        except DotApiError as err:
+            if "not found" in str(err).lower():
+                raise DotApiError(
+                    f"Device '{device_id}' has no Image API content program configured. "
+                    "Add one in the Dot. app first."
+                ) from err
+            raise
 
     hass.services.async_register(
         DOMAIN, SERVICE_SEND_TEXT, handle_send_text, schema=SEND_TEXT_SCHEMA
