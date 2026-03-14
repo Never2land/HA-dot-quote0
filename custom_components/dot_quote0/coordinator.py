@@ -25,6 +25,7 @@ class DotDeviceData:
 
         self.alias: str | None = status.get("alias")
         self.location: str | None = status.get("location")
+        self.tasks: list[dict[str, Any]] = []
 
         st = status.get("status", {})
         self.firmware_version: str = st.get("version", "unknown")
@@ -96,4 +97,11 @@ class DotDataCoordinator(DataUpdateCoordinator[dict[str, DotDeviceData]]):
                 dd = DotDeviceData(dev, {})
                 dd.online = False
                 data[device_id] = dd
+            # Fetch content task list
+            try:
+                tasks = await self.api.list_device_tasks(device_id)
+                data[device_id].tasks = tasks if isinstance(tasks, list) else []
+            except (DotApiError, DotConnectionError):
+                _LOGGER.debug("Could not fetch tasks for %s", device_id)
+                data[device_id].tasks = []
         return data

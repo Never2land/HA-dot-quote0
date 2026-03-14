@@ -86,13 +86,14 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     coordinator: DotDataCoordinator = hass.data[DOMAIN][entry.entry_id]
-    entities: list[DotSensorEntity] = []
+    entities: list[SensorEntity] = []
 
     for device_id in coordinator.data:
         for description in SENSOR_DESCRIPTIONS:
             entities.append(
                 DotSensorEntity(coordinator, device_id, description)
             )
+        entities.append(DotTaskListSensor(coordinator, device_id))
 
     async_add_entities(entities)
 
@@ -139,3 +140,48 @@ class DotSensorEntity(CoordinatorEntity[DotDataCoordinator], SensorEntity):
         if data is None:
             return None
         return self.entity_description.value_fn(data)
+
+
+class DotTaskListSensor(CoordinatorEntity[DotDataCoordinator], SensorEntity):
+    """Sensor showing the number of content tasks on a Dot. device."""
+
+    _attr_has_entity_name = True
+    _attr_name = "Content Tasks"
+    _attr_icon = "mdi:playlist-check"
+
+    def __init__(
+        self,
+        coordinator: DotDataCoordinator,
+        device_id: str,
+    ) -> None:
+        super().__init__(coordinator)
+        self._device_id = device_id
+        self._attr_unique_id = f"{device_id}_content_tasks"
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        data = self.coordinator.data.get(self._device_id)
+        model_name = "Quote/0"
+        if data:
+            model_name = f"Quote/0 (Edition {data.edition})"
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._device_id)},
+            name=data.display_name if data else f"Quote/0 {self._device_id[-4:]}",
+            manufacturer=MANUFACTURER,
+            model=model_name,
+            sw_version=data.firmware_version if data else None,
+        )
+
+    @property
+    def native_value(self) -> int | None:
+        data = self.coordinator.data.get(self._device_id)
+        if data is None:
+            return None
+        return len(data.tasks)
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        data = self.coordinator.data.get(self._device_id)
+        if data is None:
+            return {}
+        return {"tasks": data.tasks}
