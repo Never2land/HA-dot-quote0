@@ -4,7 +4,7 @@
 
 A custom Home Assistant integration for [Dot. Quote/0](https://dot.mindreset.tech/docs/quote_0) e-ink devices by MindReset.
 
-Monitor device status and push text or image content to your Quote/0 directly from Home Assistant.
+Monitor device status, push text or image content, and display weather, calendar, and system info on your Quote/0 directly from Home Assistant.
 
 ## Features
 
@@ -15,6 +15,7 @@ Monitor device status and push text or image content to your Quote/0 directly fr
 - **Firmware Version** — current firmware
 - **Last Render** — timestamp of the last screen update
 - **Next Render (Battery / Power)** — scheduled next update times
+- **Content Tasks** — number of content tasks in the device loop (full task list available as attributes)
 
 ### Binary Sensor
 - **Online** — connectivity status
@@ -30,6 +31,12 @@ Monitor device status and push text or image content to your Quote/0 directly fr
 ### Service Actions
 - `dot_quote0.send_text` — push text content with full parameter control
 - `dot_quote0.send_image` — push image content with dithering and border options
+- `dot_quote0.send_weather` — push current weather conditions and forecast from any HA weather entity
+- `dot_quote0.send_calendar` — push upcoming events from any HA calendar entity
+- `dot_quote0.send_system_status` — push Home Assistant system status (version, CPU, memory, disk, entity count)
+
+### Diagnostics
+- Download device diagnostics from **Settings → Devices & Services → Dot. Quote/0 → ⋮ → Download diagnostics** for troubleshooting
 
 ## Prerequisites
 
@@ -78,7 +85,7 @@ You can also use service actions in automations and scripts:
 # Send text to device
 service: dot_quote0.send_text
 data:
-  device_id: "YOUR_DEVICE_ID"
+  serial: "YOUR_DEVICE_SERIAL"
   title: "Hello"
   message: "World"
   signature: "From Home Assistant"
@@ -89,11 +96,76 @@ data:
 # Send image to device
 service: dot_quote0.send_image
 data:
-  device_id: "YOUR_DEVICE_ID"
+  serial: "YOUR_DEVICE_SERIAL"
   image: "<base64-encoded PNG data>"
   dither_type: "DIFFUSION"
   border: 0
   refresh_now: true
+```
+
+```yaml
+# Send weather to device
+service: dot_quote0.send_weather
+data:
+  serial: "YOUR_DEVICE_SERIAL"
+  weather_entity: weather.home
+  include_forecast: true
+  forecast_days: 3
+  refresh_now: true
+```
+
+```yaml
+# Send calendar events to device
+service: dot_quote0.send_calendar
+data:
+  serial: "YOUR_DEVICE_SERIAL"
+  calendar_entity: calendar.personal
+  hours_ahead: 24
+  max_events: 5
+  refresh_now: true
+```
+
+```yaml
+# Send system status to device
+service: dot_quote0.send_system_status
+data:
+  serial: "YOUR_DEVICE_SERIAL"
+  refresh_now: true
+```
+
+### Automation Examples
+
+Push a daily weather update every morning:
+
+```yaml
+automation:
+  - alias: "Morning weather on Quote/0"
+    trigger:
+      - platform: time
+        at: "07:00:00"
+    action:
+      - service: dot_quote0.send_weather
+        data:
+          serial: "YOUR_DEVICE_SERIAL"
+          weather_entity: weather.home
+          forecast_days: 3
+```
+
+Show today's calendar at breakfast:
+
+```yaml
+automation:
+  - alias: "Daily calendar on Quote/0"
+    trigger:
+      - platform: time
+        at: "07:30:00"
+    action:
+      - service: dot_quote0.send_calendar
+        data:
+          serial: "YOUR_DEVICE_SERIAL"
+          calendar_entity: calendar.personal
+          hours_ahead: 12
+          max_events: 5
 ```
 
 ## API Reference

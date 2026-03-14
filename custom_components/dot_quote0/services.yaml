@@ -134,3 +134,127 @@ send_image:
       required: false
       selector:
         text:
+
+send_system_status:
+  name: Send System Status
+  description: Push Home Assistant system status (HA version, CPU, memory, disk, entity count) to a Dot. Quote/0 device.
+  fields:
+    serial:
+      name: Serial
+      description: The device serial number (e.g. ABCD1234ABCD).
+      required: true
+      example: "ABCD1234ABCD"
+      selector:
+        text:
+    refresh_now:
+      name: Refresh Now
+      description: Whether to display content immediately.
+      required: false
+      default: true
+      selector:
+        boolean:
+    task_key:
+      name: Task Key
+      description: Target a specific Text API task on the device. Leave empty for the first one.
+      required: false
+      selector:
+        text:
+
+send_calendar:
+  name: Send Calendar
+  description: Push upcoming calendar events from a Home Assistant calendar entity to a Dot. Quote/0 device.
+  fields:
+    serial:
+      name: Serial
+      description: The device serial number (e.g. ABCD1234ABCD).
+      required: true
+      example: "ABCD1234ABCD"
+      selector:
+        text:
+    calendar_entity:
+      name: Calendar Entity
+      description: The Home Assistant calendar entity to read events from.
+      required: true
+      selector:
+        entity:
+          domain: calendar
+    hours_ahead:
+      name: Hours Ahead
+      description: How many hours ahead to look for events.
+      required: false
+      default: 24
+      selector:
+        number:
+          min: 1
+          max: 168
+          unit_of_measurement: hours
+    max_events:
+      name: Max Events
+      description: Maximum number of events to display.
+      required: false
+      default: 5
+      selector:
+        number:
+          min: 1
+          max: 10
+    refresh_now:
+      name: Refresh Now
+      description: Whether to display content immediately.
+      required: false
+      default: true
+      selector:
+        boolean:
+    task_key:
+      name: Task Key
+      description: Target a specific Text API task on the device. Leave empty for the first one.
+      required: false
+      selector:
+        text:
+
+send_weather:
+  name: Send Weather
+  description: Push current weather conditions and forecast from a Home Assistant weather entity to a Dot. Quote/0 device.
+  fields:
+    serial:
+      name: Serial
+      description: The device serial number (e.g. ABCD1234ABCD).
+      required: true
+      example: "ABCD1234ABCD"
+      selector:
+        text:
+    weather_entity:
+      name: Weather Entity
+      description: The Home Assistant weather entity to read from.
+      required: true
+      selector:
+        entity:
+          domain: weather
+    include_forecast:
+      name: Include Forecast
+      description: Whether to include multi-day forecast.
+      required: false
+      default: true
+      selector:
+        boolean:
+    forecast_days:
+      name: Forecast Days
+      description: Number of forecast days to include.
+      required: false
+      default: 3
+      selector:
+        number:
+          min: 1
+          max: 7
+    refresh_now:
+      name: Refresh Now
+      description: Whether to display content immediately.
+      required: false
+      default: true
+      selector:
+        boolean:
+    task_key:
+      name: Task Key
+      description: Target a specific Text API task on the device. Leave empty for the first one.
+      required: false
+      selector:
+        text:

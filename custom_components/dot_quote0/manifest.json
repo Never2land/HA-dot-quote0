@@ -4,8 +4,9 @@
   "codeowners": [],
   "config_flow": true,
   "documentation": "https://dot.mindreset.tech/docs",
+  "homeassistant": "2023.7.0",
   "integration_type": "hub",
   "iot_class": "cloud_polling",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "requirements": []
 }
