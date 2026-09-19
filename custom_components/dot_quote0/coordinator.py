@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from datetime import timedelta
 from typing import Any
 
@@ -53,6 +54,25 @@ class DotDeviceData:
         if self.alias:
             return self.alias
         return f"Quote/0 {self.device_id[-4:]}"
+
+    @property
+    def battery_level(self) -> int | None:
+        """Parse a battery string like '52%' to int.
+
+        On external power the API reports a phrase instead of a percentage
+        (e.g. '已连接电源'), so there is no level to report then.
+        """
+        match = re.fullmatch(r"\s*(\d{1,3})\s*%\s*", str(self.battery_status))
+        if not match:
+            return None
+        return min(int(match.group(1)), 100)
+
+    @property
+    def external_power(self) -> bool | None:
+        """True when the device runs from USB power rather than its battery."""
+        if not self.battery_status or self.battery_status == "unknown":
+            return None
+        return self.battery_level is None
 
     @property
     def wifi_rssi(self) -> int | None:

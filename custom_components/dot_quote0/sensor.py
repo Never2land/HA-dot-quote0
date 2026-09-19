@@ -8,9 +8,10 @@ from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
+    SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import SIGNAL_STRENGTH_DECIBELS_MILLIWATT
+from homeassistant.const import PERCENTAGE, SIGNAL_STRENGTH_DECIBELS_MILLIWATT
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -39,6 +40,16 @@ SENSOR_DESCRIPTIONS: tuple[DotSensorEntityDescription, ...] = (
         name="Battery Status",
         icon="mdi:battery",
         value_fn=lambda d: d.battery_status,
+    ),
+    DotSensorEntityDescription(
+        key="battery",
+        translation_key="battery",
+        name="Battery",
+        device_class=SensorDeviceClass.BATTERY,
+        native_unit_of_measurement=PERCENTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        # None while on external power: the API reports no level then.
+        value_fn=lambda d: d.battery_level,
     ),
     DotSensorEntityDescription(
         key="wifi_signal",

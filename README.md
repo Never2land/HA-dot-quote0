@@ -10,7 +10,8 @@ Monitor device status, push text or image content, and display weather, calendar
 
 ### Sensors
 - **Power State** — current device power mode (Power Active, Battery Active, etc.)
-- **Battery Status** — charging state
+- **Battery Status** — charging state, as the API words it (`52%`, or a phrase while on USB power)
+- **Battery** — the level as a number (%), so Home Assistant can graph it and keep long-term statistics; unknown while on USB power, when the API reports no level
 - **Wi-Fi Signal** — signal strength in dBm
 - **Firmware Version** — current firmware
 - **Last Render** — timestamp of the last screen update
@@ -19,6 +20,7 @@ Monitor device status, push text or image content, and display weather, calendar
 
 ### Binary Sensor
 - **Online** — connectivity status
+- **External Power** — on while the device runs from USB power instead of its battery
 
 ### Controls (on the device page)
 - **Next Content** — cycle to the next item in the content loop

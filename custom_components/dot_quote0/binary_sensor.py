@@ -20,10 +20,10 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     coordinator: DotDataCoordinator = hass.data[DOMAIN][entry.entry_id]
-    entities = [
-        DotOnlineBinarySensor(coordinator, device_id)
-        for device_id in coordinator.data
-    ]
+    entities: list[BinarySensorEntity] = []
+    for device_id in coordinator.data:
+        entities.append(DotOnlineBinarySensor(coordinator, device_id))
+        entities.append(DotExternalPowerBinarySensor(coordinator, device_id))
     async_add_entities(entities)
 
 
@@ -61,3 +61,28 @@ class DotOnlineBinarySensor(CoordinatorEntity[DotDataCoordinator], BinarySensorE
         if data is None:
             return None
         return data.online
+
+
+class DotExternalPowerBinarySensor(DotOnlineBinarySensor):
+    """Binary sensor indicating whether a Dot. device is on USB power."""
+
+    _attr_name = "External Power"
+    _attr_device_class = BinarySensorDeviceClass.PLUG
+
+    def __init__(
+        self, coordinator: DotDataCoordinator, device_id: str
+    ) -> None:
+        super().__init__(coordinator, device_id)
+        self._attr_unique_id = f"{device_id}_external_power"
+
+    @property
+    def available(self) -> bool:
+        data = self.coordinator.data.get(self._device_id)
+        return data is not None and data.online
+
+    @property
+    def is_on(self) -> bool | None:
+        data = self.coordinator.data.get(self._device_id)
+        if data is None:
+            return None
+        return data.external_power
