@@ -91,9 +91,9 @@ send_image:
         select:
           options:
             - label: "White"
-              value: 0
+              value: "0"
             - label: "Black"
-              value: 1
+              value: "1"
     dither_type:
       name: Dither Type
       description: Image dithering type.

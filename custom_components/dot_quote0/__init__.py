@@ -53,7 +53,8 @@ SEND_IMAGE_SCHEMA = vol.Schema(
         vol.Required("serial"): cv.string,
         vol.Required("image"): cv.string,
         vol.Optional("link"): cv.string,
-        vol.Optional("border", default=0): vol.In([0, 1]),
+        # The UI selector can only offer string options ("0"/"1"); automations pass ints.
+        vol.Optional("border", default=0): vol.All(vol.Coerce(int), vol.In([0, 1])),
         vol.Optional("dither_type"): vol.In(["DIFFUSION", "ORDERED", "NONE"]),
         vol.Optional("dither_kernel"): vol.In([
             "FLOYD_STEINBERG", "ATKINSON", "BURKES", "SIERRA2", "STUCKI",
